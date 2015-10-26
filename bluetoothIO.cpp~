@@ -98,6 +98,7 @@ void myItoa(uint8_t var, char *dest)
 	dest[j+1] = '\0' ;
 }
 
+
 void obslugaKomunikatu(const char *komunikat)
 {
 	if(strncmp(komunikat, ID, ID_LEN) == 0)

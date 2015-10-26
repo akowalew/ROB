@@ -66,6 +66,15 @@ enum
 	ODCZYT_B
 } ;
 
+const void seeFun() ;
+const void resetFun() ;
+
+const void ( *FUNCTION_PTRS[])() =
+{
+	seeFun,
+	resetFun
+} ;
+
 
 
 #endif // _BLUETOOTHIO_H_
