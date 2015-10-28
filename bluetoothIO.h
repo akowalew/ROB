@@ -1,6 +1,8 @@
 #ifndef _BLUETOOTHIO_H_
 #define _BLUETOOTHIO_H_
 
+typedef unsigned char uint8_t ;
+
 /*
 
 	Komunikacja przez port szeregowy ma wyglądać następująco :
@@ -37,35 +39,16 @@
 
 	Przykładowo operacje użytkowe na robocie
 	
+	ROB:STATE	Rozkazujemy robotowi, by powiedział o swoim aktualnym stanie
 	ROB:SEE		Rozkazujemy robotowi, by dał opis każdej ze zmiennej
 	ROB:RESET	Rozkazujemy robotowi, by się zresetował
 	ROB		Sprawdzamy komunikację z robotem
 */
 
-void obslugaKomunikatu(const char *komunikat) ;
-const char ID[] = "ROB" ;
-const char ID_OK[] = "ROB:OK" ;
-const char READ = '>' ;
-const char WRITE = '<' ;
-const char OPT = ':' ;
-
-const uint8_t ID_LEN = sizeof(ID) / sizeof(char) - 1;
-
-const char *OPT_ARGS[] = 
+namespace BluetoothIO
 {
-	"SEE",
-	"RESET"
-} ;
-
-
-enum
-{
-	WYPELNIENIE_A,
-	WYPELNIENIE_B,
-	ODCZYT_A,
-	ODCZYT_B
-} ;
-
-
+	void obslugaKomunikatu(const char *komunikat) ;
+	void inicjacjaObslugi() ;
+}
 
 #endif // _BLUETOOTHIO_H_
