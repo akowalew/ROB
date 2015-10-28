@@ -6,9 +6,17 @@
 #include "bluetoothIO.h"
 
 #include <avr/pgmspace.h>
+#include "USART/buforCykliczny.h"
+
+
 
 int main()
 {
+
+	BuforCykliczny<uint8_t, 64> bufRX ;
+
+
+
 	Usart::initUsart() ;
 	BluetoothIO::inicjacjaObslugi() ;
 

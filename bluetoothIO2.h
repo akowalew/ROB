@@ -15,8 +15,8 @@
 #define CONST_STRLEN(s)	((sizeof((s)) / sizeof(char)) - 1)
 
 const uint8_t SZ_PTRVAR = 4 ;
-void (* const printStringFunction)(const char*) = Usart::sendLine ;
-void (* const printStringPFunction)(const char*) = Usart::sendLineP ;
+void (* const printStringFunction)(const char*) = Usart::sendString ;
+void (* const printStringPFunction)(const char*) = Usart::sendStringP ;
 volatile uint8_t * const ptrVariables[SZ_PTRVAR] =
 {
 		&OCR0A,
@@ -43,7 +43,6 @@ const char OPT = ':' ;
 
 uint8_t myAtoi(volatile uint8_t *u8Dest, const char *src) ;
 void myItoa(uint8_t var, char *dest) ;
-void sendVar(uint8_t whichVar) ;
 
 void funkcjaOpcji(const char *str) ;
 void funkcjaOdczytu(const char *str) ;

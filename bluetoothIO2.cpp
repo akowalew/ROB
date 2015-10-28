@@ -54,18 +54,6 @@ void myItoa(uint8_t var, char *dest)
 	dest[j+1] = '\0' ;
 }
 
-void sendVar(uint8_t whichVar)
-{
-	/*
-	char message[CONST_STRLEN(ID_OK_READ)+3+1] ; // + ":OK:" + 8bit + '\0'
-	strcpy(message, ID_OK_READ) ;
-	myItoa(*ptrVariables[whichVar], message + CONST_STRLEN(ID_OK_READ)) ;
-	printStringFunction(message) ; */
-
-
-
-}
-
 void funkcjaOpcji(const char *str)
 {
 	if(strcmp(str, "SEE") == 0)
