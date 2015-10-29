@@ -49,6 +49,7 @@ namespace BluetoothIO
 {
 	void obslugaKomunikatu(const char *komunikat) ;
 	void inicjacjaObslugi() ;
+	void shiftRxOut(uint8_t *dest) ; // wyrzuć wszystko z bufora RX
 }
 
 #endif // _BLUETOOTHIO_H_

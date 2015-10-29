@@ -9,6 +9,8 @@
 #include "bluetoothIO.h"
 
 #include <string.h>
+#include "USART/usart.h"
+#include <avr/interrupt.h>
 
 uint8_t myAtoi(volatile uint8_t *u8Dest, const char *src)
 {
@@ -56,12 +58,12 @@ void myItoa(uint8_t var, char *dest)
 
 void funkcjaOpcji(const char *str)
 {
-	if(strcmp(str, "SEE") == 0)
+	if(strncmp(str, "SEE", 3) == 0)
 	{
 		printStringFunction(ID_OK) ;
 		printStringPFunction(SEE_TEXT) ;
 	}
-	else if(strcmp(str, "RESET") == 0)
+	else if(strncmp(str, "RESET", 5) == 0)
 	{
 		printStringFunction(ID_OK) ;
 		printStringPFunction(RESET_TEXT) ;
@@ -91,8 +93,9 @@ void funkcjaZapisu(const char *str)
 	uint8_t ileWczytanych = myAtoi(&varNum, str) ;
 
 	if(ileWczytanych > 0 && varNum < SZ_PTRVAR && str[ileWczytanych] == ':')
+	{
 		myAtoi(ptrVariables[varNum], str + ileWczytanych + 1) ;
-
-	printStringFunction(ID_OK) ;
+		printStringFunction(ID_OK) ;
+	}
 }
 

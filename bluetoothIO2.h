@@ -14,9 +14,12 @@
 
 #define CONST_STRLEN(s)	((sizeof((s)) / sizeof(char)) - 1)
 
+void sendStringBt(const char *src) ;
+void sendStringPBt(const char *srcP) ;
+
 const uint8_t SZ_PTRVAR = 4 ;
-void (* const printStringFunction)(const char*) = Usart::sendString ;
-void (* const printStringPFunction)(const char*) = Usart::sendStringP ;
+void (* const printStringFunction)(const char*) = sendStringBt ;
+void (* const printStringPFunction)(const char*) = sendStringPBt ;
 volatile uint8_t * const ptrVariables[SZ_PTRVAR] =
 {
 		&OCR0A,

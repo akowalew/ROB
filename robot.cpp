@@ -2,32 +2,34 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
-#include "USART/usart.h"
 #include "bluetoothIO.h"
 
 #include <avr/pgmspace.h>
-#include "USART/buforCykliczny.h"
 
+#include "USART/usart.h"
 
+volatile uint8_t flagiProgramu = 0 ;
+
+#define READ_MSG_FLAG 0
+#define READ_MSG_OVF_FLAG 1
 
 int main()
 {
-
-	BuforCykliczny<uint8_t, 64> bufRX ;
-
-
-
-	Usart::initUsart() ;
 	BluetoothIO::inicjacjaObslugi() ;
 
-	char str[60] ;
+	char str[64] ;
+
 
 
 	while(1)
 	{
-		Usart::readLine(str, 59) ;
+		if(flagiProgramu & (1 << READ_MSG_FLAG))
+		{
+			flagiProgramu &= ~(1 << READ_MSG_FLAG) ;
+			BluetoothIO::shiftRxOut((uint8_t *) str) ;
+			BluetoothIO::obslugaKomunikatu(str) ;
 
-		BluetoothIO::obslugaKomunikatu(str) ;
+		}
 	}
 }
 
