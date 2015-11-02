@@ -1,34 +1,22 @@
 #define F_CPU 16000000UL
 
 #include <avr/io.h>
-#include <util/delay.h>
-#include "bluetoothIO.h"
-
-#include <avr/pgmspace.h>
-
-#include "USART/usart.h"
-
-volatile uint8_t flagiProgramu = 0 ;
-
-#define READ_MSG_FLAG 0
-#define READ_MSG_OVF_FLAG 1
+#include "Bluetooth/bluetoothIO.h"
+#include "mainProgramFunctions.h"
 
 int main()
 {
-	BluetoothIO::inicjacjaObslugi() ;
-
-	char str[64] ;
-
-
+	BluetoothIO::initBt() ;
+	char str[64] ;	// bufor do odczytu z RX
 
 	while(1)
 	{
-		if(flagiProgramu & (1 << READ_MSG_FLAG))
+		if(isSetFlag(READ_MSG_FLAG))
 		{
-			flagiProgramu &= ~(1 << READ_MSG_FLAG) ;
-			BluetoothIO::shiftRxOut((uint8_t *) str) ;
-			BluetoothIO::obslugaKomunikatu(str) ;
+			clearFlag(READ_MSG_FLAG) ;
 
+			BluetoothIO::getReadMessage((uint8_t *) str) ;	// kopiujemy odczytany string do tablicy
+			BluetoothIO::checkMessage(str) ;	// sprawdzamy, czy możemy z tym stringiem coś uczynić.
 		}
 	}
 }

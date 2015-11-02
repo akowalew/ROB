@@ -4,7 +4,6 @@
 typedef unsigned char uint8_t ;
 
 /*
-
 	Komunikacja przez port szeregowy ma wyglądać następująco :
 	Pierw podajemy identyfikator robota, potem kierunek transmisji, następnie miejsce zapisu
 	i na koniec dane do zapisu. 
@@ -16,26 +15,11 @@ typedef unsigned char uint8_t ;
 		
 		ROB:OK
 	
-	ROB<A:0		Powoduje zapisanie do robota, do jego wszystkich zmiennych funkcyjnych, wartości 0
-		ROB:OK
-		ROB:OK
-		ROB:OK
-		...
-		ROB:OK
-			Tyle razy, ile mamy wszystkich zmiennych funkcyjnych w robocie
-	
 	Przykładowo operacje odczytu z robota :
 	
 	ROB>1		Rozkazujemy robotowi, by nam przesłał drugą zmienną funkcyjną
 		ROB:OK:xxx
 			Robot oddaje nam zawartość zmiennej drugiej
-			
-	ROB>A		Rozkazujemy robotowi, by nam przesłał wszystkie zmienne
-		ROB:OK:xxx
-		ROB:OK:yyy
-		...
-		ROB:OK:zzz
-			Tyle razy, ile mamy zmiennych funkcyjnych
 
 	Przykładowo operacje użytkowe na robocie
 	
@@ -47,9 +31,9 @@ typedef unsigned char uint8_t ;
 
 namespace BluetoothIO
 {
-	void obslugaKomunikatu(const char *komunikat) ;
-	void inicjacjaObslugi() ;
-	void shiftRxOut(uint8_t *dest) ; // wyrzuć wszystko z bufora RX
+	void checkMessage(const char *komunikat) ;	// rozpoznaj komunikat
+	void initBt() ;
+	void getReadMessage(uint8_t *dest) ; // wyrzuć wszystko z bufora RX
 }
 
 #endif // _BLUETOOTHIO_H_
