@@ -62,10 +62,21 @@ inline void turnMotor0(int8_t percent)
 		setMod0B(0) ;
 	} else {
 		setMod0A(0) ;
-		set
-	}
+		setMod0B((uint8_t) percent) ;
 	}
 }
+
+inline void turnMotor2(int8_t percent)
+{
+	if(percent >= 0) {
+		setMod2A((uint8_t) percent) ;
+		setMod2B(0) ;
+	} else {
+		setMod2A(0) ;
+		setMod2B((uint8_t) percent) ;
+	}
+}
+
 void initMotors() {
 	// Inicjacja silników w trybie FAST_PWM
 
