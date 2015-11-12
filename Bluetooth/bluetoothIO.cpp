@@ -8,6 +8,8 @@
 
 #include <avr/interrupt.h>
 
+extern CycleBuffer<uint8_t, 64> buffRx ;
+
 namespace BluetoothIO
 {
 	void checkMessage(const char *msg)
@@ -26,6 +28,7 @@ namespace BluetoothIO
 					checkWriteMessage(msg + CONST_STRLEN(ID) + 1) ;
 			}
 		}
+
 	}
 	
 	void initBt()
@@ -43,10 +46,10 @@ namespace BluetoothIO
 
 	void getReadMessage(uint8_t *dest)
 	{	// wyrzuca komunikat z buforu RX do 'dest'
-		extern CycleBuffer<uint8_t, 64> buffRx ;
+
 		while(!buffRx.isEmpty())
 			buffRx.pop(dest++) ;
-		*dest = '\0' ; // dodajemy zero, dla pewności
+		*(dest-1) = '\0' ; // dodajemy zero, dla pewności
 	}
 }
 

@@ -4,11 +4,14 @@
 #include "Bluetooth/bluetoothIO.h"
 #include "mainProgramFunctions.h"
 
+#include <util/delay.h>
+
 int main()
 {
 	BluetoothIO::initBt() ;
-	char str[64] ;	// bufor do odczytu z RX
+	initProgram() ;
 
+	char str[32] ;	// bufor do odczytu z RX
 	while(1)
 	{
 		if(isSetFlag(READ_MSG_FLAG))

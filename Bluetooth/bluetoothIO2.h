@@ -13,15 +13,6 @@
 
 #define CONST_STRLEN(s)	((sizeof((s)) / sizeof(char)) - 1)
 
-volatile uint8_t * const ptrVariables[] =
-{
-		&OCR0A,
-		&OCR0B,
-		&OCR2A,
-		&OCR2B
-};
-const uint8_t SZ_PTRVAR = sizeof(ptrVariables) / sizeof(volatile uint8_t * const) ;
-
 const char ID[] = "ROB" ;
 const char ID_OK[]  = "ROB:OK" ;
 const char ID_OK_READ[]  = "ROB:OK:" ;

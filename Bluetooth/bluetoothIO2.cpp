@@ -14,6 +14,7 @@
 #include "../UTILITY/utilityFunctions.h"
 #include "../UTILITY/cycleBuffer.h"
 #include "../mainProgramFunctions.h"
+#include "../motors.h"
 
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
@@ -35,6 +36,12 @@ void sendStringBt(const char *src)
 		buffTx.push(*(src++)) ;
 	}
 
+	if(buffTx.isFull()){
+		Usart::udrIntEnable() ;
+		while(!buffTx.isEmpty()) ; // czekaj na zwolnienie zasobów
+	}
+	buffTx.push(0) ;
+
 	Usart::udrIntEnable() ;
 }
 
@@ -49,7 +56,15 @@ void sendStringPBt(const char *srcP)
 		}
 	 	 if((c = pgm_read_byte(srcP++)))
 	 		 buffTx.push(c) ;
+	 	 else
+	 		 break ;
 	}
+
+	if(buffTx.isFull()){
+		Usart::udrIntEnable() ;
+		while(!buffTx.isEmpty()) ; // czekaj na zwolnienie zasobów
+	}
+	buffTx.push(0) ;
 
 	Usart::udrIntEnable() ;
 }
@@ -66,6 +81,15 @@ void checkOptionMessage(const char *str)
 		sendStringBt(ID_OK) ;
 		sendStringPBt(RESET_TEXT_P) ;
 	}
+	else if(strcmp(str, "SETMOT") == 0) {
+		sendStringBt(ID_OK) ;
+		turnMotors() ;
+	}
+	else if(strcmp(str, "BRKMOT") == 0) {
+		sendStringBt(ID_OK) ;
+		turnMotor0(0) ;
+		turnMotor2(0) ;
+	}
 }
 
 void checkReadMessage(const char *str)
@@ -75,12 +99,12 @@ void checkReadMessage(const char *str)
 
 	n = myAtoi(&varNum, str) ;
 
-	if(n > 0 && varNum < SZ_PTRVAR)
+	if(n > 0 && varNum < NUMBER_OF_VARIABLES)
 	{
 		char num[4] ;
 
 		sendStringBt(ID_OK) ;
-		myItoa(*ptrVariables[varNum], num) ;
+		myItoa(*ptrVariables[varNum], num) ; // odczytujemy wartość z tablicy zmiennych
 		sendStringBt(num) ;
 	}
 }
@@ -90,9 +114,9 @@ void checkWriteMessage(const char *str)
 	uint8_t varNum ;
 	uint8_t n = myAtoi(&varNum, str) ;
 
-	if(n > 0 && varNum < SZ_PTRVAR && str[n] == ':')
+	if(n > 0 && varNum < NUMBER_OF_VARIABLES && str[n] == ':')
 	{
-		myAtoi(ptrVariables[varNum], str + n + 1) ;
+		myAtoi(ptrVariables[varNum], str + n + 1) ; // zapisujemy wartość do tablicy zmiennych
 		sendStringBt(ID_OK) ;
 	}
 }
@@ -116,7 +140,8 @@ void checkRxBuffer()
 {
 	if(buffRx.isFull())
 		setFlag(READ_MSG_OVF_FLAG) ;
-	if(buffRx.seeLastAdded() == '\n')
+	if(buffRx.seeLastAdded() == '\n') {
 		setFlag(READ_MSG_FLAG) ;
+	}
 }
 

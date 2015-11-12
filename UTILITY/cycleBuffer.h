@@ -63,7 +63,7 @@ public :
 		return lastAdd ;
 	}
 
-	CycleBuffer() : i(0), j(0) , full(true), empty(false) { }
+	CycleBuffer() : i(0), j(0) , full(false), empty(true) { }
 
 };
 

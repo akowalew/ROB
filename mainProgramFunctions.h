@@ -2,7 +2,14 @@
 #ifndef _MAINPROGRAMFUNCTIONS_H_
 #define _MAINPROGRAMFUNCTIONS_H_
 
+#include "motors.h"
+
 extern volatile uint8_t programFlags ;
+extern const uint8_t NUMBER_OF_VARIABLES ;
+extern volatile uint8_t * const ptrVariables[] ;
+
+#define F_PWM 62500UL
+
 enum	FLAG_MASK
 {
 	READ_MSG_FLAG = 0,
