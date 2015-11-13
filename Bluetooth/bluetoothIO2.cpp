@@ -22,6 +22,7 @@
 
 CycleBuffer<volatile uint8_t, TX_BUFF_SZ> buffTx ;
 CycleBuffer<volatile uint8_t, RX_BUFF_SZ> buffRx ;
+extern volatile uint8_t bluetoothState ;
 
 void checkRxBuffer() ;
 
@@ -139,9 +140,9 @@ ISR(USART_RX_vect)
 void checkRxBuffer()
 {
 	if(buffRx.isFull())
-		setFlag(READ_MSG_OVF_FLAG) ;
+		bluetoothState = BluetoothIO::READ_MSG_OVF ;
 	if(buffRx.seeLastAdded() == '\n') {
-		setFlag(READ_MSG_FLAG) ;
+		bluetoothState = BluetoothIO::READ_MSG;
 	}
 }
 

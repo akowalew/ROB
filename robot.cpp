@@ -6,17 +6,40 @@
 
 #include <util/delay.h>
 
+#include <avr/interrupt.h>
+#include "timeMeasure.h"
+
 int main()
 {
-	BluetoothIO::initBt() ;
 	initProgram() ;
+
+	//startTimeMeasuring(1000UL) ;
+
+	turnOffLed() ;
+	while(1) {
+		/* if(getMeasuringState() == false) {
+
+			turnSwitchLed() ;
+			startTimeMeasuring(1000UL) ;
+		} */
+
+		if(isBtn1Pressed())
+			turnOnLed() ;
+
+	}
+
+
+
+	return 0 ;
+	BluetoothIO::initBt() ;
+
 
 	char str[32] ;	// bufor do odczytu z RX
 	while(1)
 	{
-		if(isSetFlag(READ_MSG_FLAG))
+		if(BluetoothIO::getState() == BluetoothIO::READ_MSG)
 		{
-			clearFlag(READ_MSG_FLAG) ;
+			BluetoothIO::clearState() ;
 
 			BluetoothIO::getReadMessage((uint8_t *) str) ;	// kopiujemy odczytany string do tablicy
 			BluetoothIO::checkMessage(str) ;	// sprawdzamy, czy możemy z tym stringiem coś uczynić.

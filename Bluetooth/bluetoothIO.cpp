@@ -9,6 +9,7 @@
 #include <avr/interrupt.h>
 
 extern CycleBuffer<uint8_t, 64> buffRx ;
+volatile uint8_t bluetoothState ;
 
 namespace BluetoothIO
 {
@@ -50,6 +51,14 @@ namespace BluetoothIO
 		while(!buffRx.isEmpty())
 			buffRx.pop(dest++) ;
 		*(dest-1) = '\0' ; // dodajemy zero, dla pewności
+	}
+
+	uint8_t getState() {
+		return bluetoothState ;
+	}
+
+	void clearState() {
+		bluetoothState = NOTHING_TO_READ ;
 	}
 }
 

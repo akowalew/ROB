@@ -4,32 +4,30 @@
 
 #include "motors.h"
 
-extern volatile uint8_t programFlags ;
 extern const uint8_t NUMBER_OF_VARIABLES ;
 extern volatile uint8_t * const ptrVariables[] ;
 
 #define F_PWM 62500UL
 
-enum	FLAG_MASK
-{
-	READ_MSG_FLAG = 0,
-	READ_MSG_OVF_FLAG = 1
-} ;
+#define LED_ONBRD	PB5
+#define BTN1		PD7
+#define BTN2		PB0
 
-inline void setFlag(uint8_t flag)
-{
-	programFlags |= 1 << flag ;
+inline void turnOnLed() {
+	PORTB |= (1 << LED_ONBRD) ;
 }
 
-inline void clearFlag(uint8_t flag)
-{
-	programFlags &= ~(1 << flag) ;
+inline void turnOffLed() {
+	PORTB &= ~(1 << LED_ONBRD) ;
 }
 
-inline uint8_t isSetFlag(uint8_t flag)
-{
-	return programFlags & (1 << flag) ;
+inline void turnSwitchLed() {
+	PORTB ^= (1 << LED_ONBRD) ;
 }
+
+void initButtons() ;
+bool isBtn1Pressed() ;
+bool isBtn2Pressed()  ;
 
 void initProgram() ;
 

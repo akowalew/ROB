@@ -31,9 +31,19 @@ typedef unsigned char uint8_t ;
 
 namespace BluetoothIO
 {
+	enum BluetoothState {
+		NOTHING_TO_READ ,
+		READ_MSG ,
+		READ_MSG_OVF
+	} ;
+
+	uint8_t getState() ; // odczytanie stanu powoduje wyzerowanie, czyli NOTHING_TO_READ
+	void clearState() ;
+
 	void checkMessage(const char *komunikat) ;	// rozpoznaj komunikat
 	void initBt() ;
 	void getReadMessage(uint8_t *dest) ; // wyrzuć wszystko z bufora RX
+
 }
 
 #endif // _BLUETOOTHIO_H_
