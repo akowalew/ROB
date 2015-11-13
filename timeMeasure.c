@@ -10,7 +10,7 @@
 
 static uint16_t timeInterval = 0 ;
 volatile uint16_t count = 0 ;
-bool state ;
+uint8_t state ;
 
 void initTimeMeasure(uint16_t elementaryTick) {
 	// ustawienie Timera1 w cykl 1milisekundowy
@@ -37,22 +37,22 @@ void startTimeMeasuring(uint16_t timeToCount) {
 	TCNT1 = 0 ;
 	TIMSK1 |= (1 << TOV1) ; // włączenie przerwań cyklu 1milisekundowego
 
-	timeInterval = timeToCount ;
 	count = 0 ;
+	timeInterval = timeToCount ;
 
-	state = true ;
+	state = 1 ;
 }
 
 uint16_t getTimeMeasure() {
 	return count ;
 }
 
-bool getMeasuringState() {
+uint8_t getMeasuringState() {
 	return state ;
 }
 
 void stopTimeMeasuring() {
 	TIMSK1 &= ~(1 << TOV0) ;
-	state = false ;
+	state = 0 ;
 }
 

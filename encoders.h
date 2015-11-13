@@ -14,25 +14,23 @@
 #define ENC2_A	PB4	// D12
 #define ENC2_B	PB1	// D9
 
-struct EncoderResult {
+typedef enum {
+	FORWARD,
+	BACKWARD
+} Direction ;
+
+typedef struct  {
 	uint16_t ticks ;
-	enum {
-		FORWARD,
-		BACKWARD
-	} direction ;
-};
+	Direction direction ;
 
-inline uint8_t getEnc0A() {
-	return PIND & (1 << ENC0_A) ;
-}
+} EncoderResult ;
 
+uint8_t getEnc0A() ;
 inline uint8_t getEnc0B() {
 	return PIND & (1 << ENC0_B) ;
 }
 
-inline uint8_t getEnc2A() {
-	return PINB & (1 << ENC2_A) ;
-}
+uint8_t getEnc2A() ;
 
 inline uint8_t getEnc2B() {
 	return PINB & (1 << ENC2_B) ;

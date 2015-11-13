@@ -12,13 +12,15 @@
 #define TICK_ONE_MILISECOND		15999UL
 #define TICK_TWO_MILISECONDS	31999UL
 
+#define MAX_U16	0xFFFF
+
 void initTimeMeasure(uint16_t elementaryTick) ;
 void startTimeMeasuring(uint16_t timeToCount) ;
 
 void stopTimeMeasuring() ;
 uint16_t getTimeMeasure() ;
 
-bool getMeasuringState() ;
+uint8_t getMeasuringState() ;
 // TRUE - nadal mierzy
 // FALSE - przestał mierzyć(sam, albo ktoś go wyłączył)
 

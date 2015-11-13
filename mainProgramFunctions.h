@@ -26,8 +26,8 @@ inline void turnSwitchLed() {
 }
 
 void initButtons() ;
-bool isBtn1Pressed() ;
-bool isBtn2Pressed()  ;
+uint8_t isBtn1Pressed() ;
+uint8_t isBtn2Pressed()  ;
 
 void initProgram() ;
 

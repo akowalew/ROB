@@ -10,15 +10,9 @@
 
 #include <avr/pgmspace.h>
 
-const char SEE_TEXT_P[]  PROGMEM =	"Oto opis wystepujacych zmiennych:\n"
-					"0 : OCR0A\n"
-					"1 : OCR0B\n"
-					"2 : OCR2A\n"
-					"3 : OCR2B\n"
-					"4 : MOT0 SPEED\n"
-					"5 : MOT2 SPEED";
+extern const char SEE_TEXT_P[]  PROGMEM ;
 
-const char RESET_TEXT_P[] PROGMEM = "Nastapi zresetowanie robota do poczatku..." ;
-const char HELLO_P[] PROGMEM = "Witaj! To obsluga robota ROB!" ;
+extern const char RESET_TEXT_P[] PROGMEM;
+extern const char HELLO_P[] PROGMEM  ;
 
 #endif /* PROGMEMARRAYS_H_ */
