@@ -19,7 +19,7 @@ volatile uint8_t * const ptrVariables[] =
 
 const uint8_t NUMBER_OF_VARIABLES = sizeof(ptrVariables) / sizeof(volatile uint8_t * const) ;
 
-inline void setupLed() {
+static inline void setupLed() {
 	DDRB |= (1 << LED_ONBRD) ;
 }
 
@@ -39,6 +39,18 @@ uint8_t isBtn2Pressed() {
 	return !(PINB & (1 << BTN2)) ;
 }
 
+inline void turnOnLed() {
+	PORTB |= (1 << LED_ONBRD) ;
+}
+
+inline void turnOffLed() {
+	PORTB &= ~(1 << LED_ONBRD) ;
+}
+
+inline void turnSwitchLed() {
+	PORTB ^= (1 << LED_ONBRD) ;
+}
+
 
 void initProgram() {
 	//inicjacja pracy diody wbudowanej w płytkę
@@ -50,10 +62,10 @@ void initProgram() {
 	motorsTurnOn2(1) ;
 
 	// inicjacja enkoderów
-	initEncoders() ;
+	encodersInit() ;
 
 	// inicjacja odmierzacza czasu
-	initTimeMeasure(TICK_ONE_MILISECOND) ;
+	timeMeasureInit(TICK_ONE_MILISECOND) ;
 
 	// inicjacja przycisków
 	initButtons() ;

@@ -11,7 +11,6 @@
 #include <string.h>
 
 #include "../UTILITY/USART/usart.h"
-#include "../UTILITY/utilityFunctions.h"
 #include "../UTILITY/cycleBuffer.h"
 #include "../mainProgramFunctions.h"
 
@@ -20,41 +19,44 @@
 #include <avr/pgmspace.h>
 #include <avr/io.h>
 
+
+#include <stdlib.h>
+
 extern CycleBuffer buffRx ;
 extern CycleBuffer buffTx ;
 //TODO inicjacja
 
 extern volatile uint8_t bluetoothState ;
 
-void checkRxBuffer() ;
+void btCheckRxBuffer() ;
 
-void sendStringBt(const char *src)
+void btSendString(const char *src)
 {
 	while(*src)
 	{
 		if(buffTx.full){
-			udrIntEnable() ;
+			usartUdrIntEnable() ;
 			while(!buffTx.empty) ; // czekaj na zwolnienie zasobów
 		}
 		cycleBufferPush(&buffTx, *(src++)) ;
 	}
 
 	if(buffTx.full){
-		udrIntEnable() ;
+		usartUdrIntEnable() ;
 		while(!buffTx.empty) ; // czekaj na zwolnienie zasobów
 	}
 	cycleBufferPush(&buffTx, 0) ;
 
-	udrIntEnable() ;
+	usartUdrIntEnable() ;
 }
 
-void sendStringPBt(const char *srcP)
+void btSendStringP(const char *srcP)
 {
 	uint8_t c ;
 
 	while(1) {
 		if(buffTx.full){
-			udrIntEnable() ;
+			usartUdrIntEnable() ;
 			while(!buffTx.empty) ; // czekaj na zwolnienie zasobów
 		}
 	 	 if((c = pgm_read_byte(srcP++)))
@@ -64,69 +66,72 @@ void sendStringPBt(const char *srcP)
 	}
 
 	if(buffTx.full){
-		udrIntEnable() ;
+		usartUdrIntEnable() ;
 		while(!buffTx.empty) ; // czekaj na zwolnienie zasobów
 	}
 	cycleBufferPush(&buffTx, 0) ;
-	udrIntEnable() ;
+	usartUdrIntEnable() ;
 }
 
-void checkOptionMessage(const char *str)
+void btCheckOptionMessage(const char *str)
 {
 	if(strcmp(str, "SEE") == 0)
 	{
-		sendStringBt(ID_OK) ;
-		sendStringPBt(SEE_TEXT_P) ;
+		btSendString(ID_OK) ;
+		btSendStringP(SEE_TEXT_P) ;
 	}
 	else if(strcmp(str, "RESET") == 0)
 	{
-		sendStringBt(ID_OK) ;
-		sendStringPBt(RESET_TEXT_P) ;
+		btSendString(ID_OK) ;
+		btSendStringP(RESET_TEXT_P) ;
 	}
 	else if(strcmp(str, "SETMOT") == 0) {
-		sendStringBt(ID_OK) ;
+		btSendString(ID_OK) ;
 		motorsTurnMotors() ;
 	}
 	else if(strcmp(str, "BRKMOT") == 0) {
-		sendStringBt(ID_OK) ;
+		btSendString(ID_OK) ;
 		motorsTurnMot0(0) ;
 		motorsTurnMot2(0) ;
 	}
 }
 
-void checkReadMessage(const char *str)
+void btCheckReadMessage(const char *str)
 {
-	uint8_t n;
 	uint8_t varNum ;
+	char *pEnd ;
 
-	n = myAtoi(&varNum, str) ;
+	varNum = strtol(str, &pEnd, 10) ;
+	// varNum = atoi(str) ;
 
-	if(n > 0 && varNum < NUMBER_OF_VARIABLES)
+	if( ((pEnd - str) / sizeof(char)) > 0 && varNum < NUMBER_OF_VARIABLES)
 	{
 		char num[4] ;
 
-		sendStringBt(ID_OK) ;
-		myItoa(*ptrVariables[varNum], num) ; // odczytujemy wartość z tablicy zmiennych
-		sendStringBt(num) ;
+		btSendString(ID_OK) ;
+		itoa(*ptrVariables[varNum], num, 10) ; // odczytujemy wartość z tablicy zmiennych
+		btSendString(num) ;
 	}
 }
 
-void checkWriteMessage(const char *str)
+void btCheckWriteMessage(const char *str)
 {
-	uint8_t varNum ;
-	uint8_t n = myAtoi(&varNum, str) ;
-
-	if(n > 0 && varNum < NUMBER_OF_VARIABLES && str[n] == ':')
+// TODO: poprawić !!!
+	char *pEnd ;
+	uint8_t varNum = strtol(str, &pEnd, 10) ;
+	uint8_t n = (pEnd - str) / sizeof(char) ;
+	if( n > 0 && varNum < NUMBER_OF_VARIABLES && str[n] == ':')
 	{
-		myAtoi(ptrVariables[varNum], str + n + 1) ; // zapisujemy wartość do tablicy zmiennych
-		sendStringBt(ID_OK) ;
+		//myAtoi(ptrVariables[varNum], str + n + 1) ; // zapisujemy wartość do tablicy zmiennych
+		*ptrVariables[varNum] = strtol(str + n + 1, pEnd, 10) ;
+		btSendString(ID_OK) ;
 	}
 }
 
 ISR(USART_UDRE_vect)
 {
 	if(buffTx.empty)
-		udrIntDisable() ;
+		usartUdrIntDisable() ;
 	else
 		cycleBufferPop(&buffTx, &UDR0) ;
 }
@@ -135,10 +140,10 @@ ISR(USART_RX_vect)
 {
 	uint8_t c = UDR0 ;
 	cycleBufferPush(&buffRx, c) ;
-	checkRxBuffer() ;
+	btCheckRxBuffer() ;
 }
 
-void checkRxBuffer()
+void btCheckRxBuffer()
 {
 	if(buffRx.full)
 		bluetoothState = READ_MSG_OVF ;

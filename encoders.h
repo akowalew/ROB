@@ -36,9 +36,9 @@ inline uint8_t getEnc2B() {
 	return PINB & (1 << ENC2_B) ;
 }
 
-EncoderResult readEncoder0() ;
-EncoderResult readEncoder2() ;
+EncoderResult encodersReadEnc0() ;
+EncoderResult encodersReadEnc2() ;
 
-void initEncoders() ;
+void encodersInit() ;
 
 #endif /* ENCODERS_H_ */

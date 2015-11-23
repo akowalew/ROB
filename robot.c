@@ -15,7 +15,7 @@
 int main()
 {
 	initProgram() ;
-	initBt() ;
+	btInit() ;
 	char s[10] ;
 	char str[32] ;	// bufor do odczytu z RX
 
@@ -23,9 +23,9 @@ int main()
 
 	while(1) {
 		turnOnLed() ;
-		enc = readEncoder2() ;
+		enc = encodersReadEnc2() ;
 		sprintf(s, "%u", enc.ticks) ;
-		sendStringBt(s) ;
+		btSendString(s) ;
 		turnOffLed() ;
 		_delay_ms(1000) ;
 	}
@@ -34,22 +34,22 @@ return 0;
 
 	while(1)
 	{
-		if(getState() == READ_MSG)
+		if(btGetState() == READ_MSG)
 		{
-			clearState() ;
+			btClearState() ;
 
-			getReadMessage((uint8_t *) str) ;	// kopiujemy odczytany string do tablicy
-			checkMessage(str) ;	// sprawdzamy, czy możemy z tym stringiem coś uczynić.
+			btGetReadMessage((uint8_t *) str) ;	// kopiujemy odczytany string do tablicy
+			btCheckMessage(str) ;	// sprawdzamy, czy możemy z tym stringiem coś uczynić.
 		}
 		if(isBtn1Pressed()) {
-			stopTimeMeasuring() ;
+			timeMeasureStop() ;
 			char s[10] ;
-			uint16_t tick = getTimeMeasure() ;
+			uint16_t tick = timeMeasureGetTime() ;
 
 			sprintf(s, "%u", tick) ;
 
-			sendStringBt(s) ;
-			startTimeMeasuring(1000UL) ;
+			btSendString(s) ;
+			timeMeasureStart(1000UL) ;
 		}
 	}
 }

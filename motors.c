@@ -90,3 +90,18 @@ void motorsInit() {
 }
 
 
+inline void motorsSetMod0A(uint8_t percent) {
+	OCR0A = (percent * 255) / 100 ;
+}
+
+inline void motorsSetMod0B(uint8_t percent) {
+	OCR0B = (percent * 255) / 100 ;
+}
+
+inline void motorsSetMod2A(uint8_t percent) {
+	OCR2A = (percent * 255) / 100 ;
+}
+
+inline void motorsSetMod2B(uint8_t percent) {
+	OCR2B = (percent * 255) / 100 ;
+}

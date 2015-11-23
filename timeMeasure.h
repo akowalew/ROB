@@ -14,13 +14,13 @@
 
 #define MAX_U16	0xFFFF
 
-void initTimeMeasure(uint16_t elementaryTick) ;
-void startTimeMeasuring(uint16_t timeToCount) ;
+void timeMeasureInit(uint16_t elementaryTick) ;
+void timeMeasureStart(uint16_t timeToCount) ;
 
-void stopTimeMeasuring() ;
-uint16_t getTimeMeasure() ;
+void timeMeasureStop() ;
+uint16_t timeMeasureGetTime() ;
 
-uint8_t getMeasuringState() ;
+uint8_t timeMeasureGetState() ;
 // TRUE - nadal mierzy
 // FALSE - przestał mierzyć(sam, albo ktoś go wyłączył)
 

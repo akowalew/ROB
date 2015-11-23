@@ -10,18 +10,18 @@
 #include <avr/interrupt.h>
 #include "timeMeasure.h"
 
-EncoderResult readEncoder0() {
+EncoderResult encodersReadEnc0() {
 	// zliczanie obrotów enkodera działa następująco :
 
 }
 
-EncoderResult readEncoder2() {
+EncoderResult encodersReadEnc2() {
 
-	startTimeMeasuring(1000UL) ;
+	timeMeasureStart(1000UL) ;
 	uint16_t ticks = 0 ;
 	uint8_t isticked = 0 ;
 	while(1) {
-		if(getMeasuringState() == 0)
+		if(timeMeasureGetState() == 0)
 			break ;
 
 		if((PINB & (1 << PB1)) && !isticked) {
@@ -37,7 +37,7 @@ EncoderResult readEncoder2() {
 	return ret ;
 }
 
-void initEncoders() {
+void encodersInit() {
 	DDRD &= ~((1 << ENC0_A) | (1 << ENC0_B)) ;
 	DDRB &= ~((1 << ENC2_A) | (1 << ENC2_B)) ;
 }

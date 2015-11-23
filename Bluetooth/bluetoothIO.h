@@ -35,12 +35,12 @@ typedef unsigned char uint8_t ;
 		READ_MSG_OVF
 	} BluetoothState ;
 
-	uint8_t getState() ; // odczytanie stanu powoduje wyzerowanie, czyli NOTHING_TO_READ
-	void clearState() ;
+	uint8_t btGetState() ;
+	void btClearState() ;
 
-	void checkMessage(const char *komunikat) ;	// rozpoznaj komunikat
-	void initBt() ;
-	void getReadMessage(uint8_t *dest) ; // wyrzuć wszystko z bufora RX
+	void btCheckMessage(const char *komunikat) ;	// rozpoznaj komunikat
+	void btInit() ;
+	void btGetReadMessage(uint8_t *dest) ; // wyrzuć wszystko z bufora RX
 
 
 

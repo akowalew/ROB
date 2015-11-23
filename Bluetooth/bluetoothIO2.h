@@ -20,11 +20,11 @@ extern const char ID_OK_READ[] ;
 #define RX_BUFF_SZ	64
 #define TX_BUFF_SZ	128
 
-void checkOptionMessage(const char *str) ;
-void checkReadMessage(const char *str) ;
-void checkWriteMessage(const char *str) ;
+void btCheckOptionMessage(const char *str) ;
+void btCheckReadMessage(const char *str) ;
+void btCheckWriteMessage(const char *str) ;
 
-void sendStringBt(const char *src) ;
-void sendStringPBt(const char *srcP) ;
+void btSendString(const char *src) ;
+void btSendStringP(const char *srcP) ;
 
 #endif /* BLUETOOTHIO2_H_ */

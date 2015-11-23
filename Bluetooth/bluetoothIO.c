@@ -32,42 +32,42 @@ const char ID_OK[]  = "ROB:OK" ;
 const char ID_OK_READ[]  = "ROB:OK:" ;
 
 
-	void checkMessage(const char *msg)
+	void btCheckMessage(const char *msg)
 	{
 		if(strncmp(msg, ID, CONST_STRLEN(ID)) == 0)
 		{
 			if(msg[CONST_STRLEN(ID)] == '\0') // wprowadził tylko ID
-				sendStringBt(ID_OK) ;
+				btSendString(ID_OK) ;
 			else
 			{
 				if(msg[CONST_STRLEN(ID)] == ':')	// komendy pozostałe
-					checkOptionMessage(msg + CONST_STRLEN(ID) + 1) ;
+					btCheckOptionMessage(msg + CONST_STRLEN(ID) + 1) ;
 				else if(msg[CONST_STRLEN(ID)] == '>')	// komputer chce pobrać zmienne
-					checkReadMessage(msg + CONST_STRLEN(ID) + 1) ;
+					btCheckReadMessage(msg + CONST_STRLEN(ID) + 1) ;
 				else if(msg[CONST_STRLEN(ID)] == '<')
-					checkWriteMessage(msg + CONST_STRLEN(ID) + 1) ;
+					btCheckWriteMessage(msg + CONST_STRLEN(ID) + 1) ;
 			}
 		}
 
 	}
 	
-	void initBt()
+	void btInit()
 	{
 		cycleBufferInit(&buffRx, RX_BUFF, RX_BUFF_SZ) ;
 		cycleBufferInit(&buffTx, TX_BUFF, TX_BUFF_SZ) ;
 
-		initUsart(USART_CHAR_SIZE_8, USART_PARITY_NONE, USART_STOP_BITS_ONE, USART_MODE_ASYNCHRONOUS) ;
-		txEnable() ;
-		rxEnable() ;
+		usartInit(USART_CHAR_SIZE_8, USART_PARITY_NONE, USART_STOP_BITS_ONE, USART_MODE_ASYNCHRONOUS) ;
+		usartTxEnable() ;
+		usartRxEnable() ;
 
-		rxIntEnable() ;
+		usartRxIntEnable() ;
 
 		sei() ;
 
-		sendStringPBt(HELLO_P) ;
+		btSendStringP(HELLO_P) ;
 	}
 
-	void getReadMessage(uint8_t *dest)
+	void btGetReadMessage(uint8_t *dest)
 	{	// wyrzuca komunikat z buforu RX do 'dest'
 
 		while(!buffRx.empty)
@@ -75,11 +75,11 @@ const char ID_OK_READ[]  = "ROB:OK:" ;
 		*(dest-1) = '\0' ; // dodajemy zero, dla pewności
 	}
 
-	uint8_t getState() {
+	uint8_t btGetState() {
 		return bluetoothState ;
 	}
 
-	void clearState() {
+	void btClearState() {
 		bluetoothState = NOTHING_TO_READ ;
 	}
 

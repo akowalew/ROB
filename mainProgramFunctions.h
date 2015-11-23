@@ -13,17 +13,11 @@ extern volatile uint8_t * const ptrVariables[] ;
 #define BTN1		PD7
 #define BTN2		PB0
 
-inline void turnOnLed() {
-	PORTB |= (1 << LED_ONBRD) ;
-}
+extern inline void turnOnLed() ;
 
-inline void turnOffLed() {
-	PORTB &= ~(1 << LED_ONBRD) ;
-}
+extern inline void turnOffLed() ;
 
-inline void turnSwitchLed() {
-	PORTB ^= (1 << LED_ONBRD) ;
-}
+extern inline void turnSwitchLed() ;
 
 void initButtons() ;
 uint8_t isBtn1Pressed() ;

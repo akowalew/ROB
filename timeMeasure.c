@@ -12,8 +12,9 @@ static uint16_t timeInterval = 0 ;
 volatile uint16_t count = 0 ;
 uint8_t state ;
 
-void initTimeMeasure(uint16_t elementaryTick) {
+void timeMeasureInit(uint16_t elementaryTick) {
 	// ustawienie Timera1 w cykl 1milisekundowy
+
 	// porty timera1 rozłączone
 	// prescaler taki jak timera0, czyli ps = 1
 	// Tryb FAST PWM 15
@@ -30,10 +31,10 @@ ISR(TIMER1_OVF_vect) {
 	// przerwanie przepełnienia timera1
 	count++ ;
 	if(count == timeInterval)
-		stopTimeMeasuring() ;
+		timeMeasureStop() ;
 }
 
-void startTimeMeasuring(uint16_t timeToCount) {
+void timeMeasureStart(uint16_t timeToCount) {
 	TCNT1 = 0 ;
 	TIMSK1 |= (1 << TOV1) ; // włączenie przerwań cyklu 1milisekundowego
 
@@ -43,15 +44,15 @@ void startTimeMeasuring(uint16_t timeToCount) {
 	state = 1 ;
 }
 
-uint16_t getTimeMeasure() {
+uint16_t timeMeasureGetTime() {
 	return count ;
 }
 
-uint8_t getMeasuringState() {
+uint8_t timeMeasureGetState() {
 	return state ;
 }
 
-void stopTimeMeasuring() {
+void timeMeasureStop() {
 	TIMSK1 &= ~(1 << TOV0) ;
 	state = 0 ;
 }
