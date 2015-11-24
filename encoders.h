@@ -11,8 +11,8 @@
 #define ENC0_A	PD4	// D4
 #define ENC0_B 	PD2 // D2
 
-#define ENC2_A	PB4	// D12
-#define ENC2_B	PB1	// D9
+#define ENC2_A	PB0	// D8, PCINT0
+#define ENC2_B	PB1	// D9, PCINT1
 
 typedef enum {
 	FORWARD,

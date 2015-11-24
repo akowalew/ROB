@@ -40,7 +40,8 @@ uint8_t isBtn2Pressed() {
 }
 
 
-void initProgram() {
+
+void initProgram(void) {
 	//inicjacja pracy diody wbudowanej w płytkę
 	setupLed() ;
 
@@ -53,7 +54,10 @@ void initProgram() {
 	initEncoders() ;
 
 	// inicjacja odmierzacza czasu
-	initTimeMeasure(TICK_ONE_MILISECOND) ;
+	initTimer() ;
+	handleMyProcess(CALCULATE_TIME(60UL), turnOnLed, 0) ;
+	handleMyProcess(CALCULATE_TIME(1000UL), turnOffLed, 1) ;
+	startTimer() ;
 
 	// inicjacja przycisków
 	initButtons() ;
@@ -61,3 +65,14 @@ void initProgram() {
 	sei() ;
 }
 
+inline void turnOnLed() {
+	PORTB |= (1 << LED_ONBRD) ;
+}
+
+inline void turnOffLed() {
+	PORTB &= ~(1 << LED_ONBRD) ;
+}
+
+inline void turnSwitchLed() {
+	PORTB ^= (1 << LED_ONBRD) ;
+}

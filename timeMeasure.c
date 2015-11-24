@@ -7,52 +7,79 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "timeMeasure.h"
+#include "mainProgramFunctions.h"
 
-static uint16_t timeInterval = 0 ;
-volatile uint16_t count = 0 ;
-uint8_t state ;
+#include "UTILITY/USART/usart.h"
+#include <stdlib.h>
 
-void initTimeMeasure(uint16_t elementaryTick) {
-	// ustawienie Timera1 w cykl 1milisekundowy
+volatile uint8_t mainTicks = 0 ;
+volatile uint8_t baseTicks = 0 ;
+
+CycleProcessStruct 	processArray[SZ_CYCLE_PROCESS] ;
+volatile uint8_t 	lastStarts[SZ_CYCLE_PROCESS] ;
+
+void initTimer() {
+	// ustawienie Timera1 w cykl 2milisekundowy
 	// porty timera1 rozłączone
 	// prescaler taki jak timera0, czyli ps = 1
 	// Tryb FAST PWM 15
 	// Overflow on TOP (OCR1A)
-	// Cykl 1 ms (OCR1A = 15999)
+
 	TCCR1A = (1 << WGM11) | (1 << WGM10) ;
 	TCCR1B = (1 << WGM13) | (1 << WGM12) | (1 << CS10) ;
-	OCR1A = elementaryTick ;
+	OCR1A = TICK_MAIN_VALUE ;
+
+	CycleProcessStruct cp = {0, 0} ;
+	for(uint8_t i = 0 ; i < SZ_CYCLE_PROCESS ; i++) {
+		lastStarts[i] = 0 ;
+		processArray[i] = cp ;
+	}
 
 	TIMSK1 &= ~(1 << TOV1) ; // na razie nie włączamy przerwań
 }
 
-ISR(TIMER1_OVF_vect) {
-	// przerwanie przepełnienia timera1
-	count++ ;
-	if(count == timeInterval)
-		stopTimeMeasuring() ;
+void timeManager() {
+	for(uint8_t i = 0 ; i < SZ_CYCLE_PROCESS ; i++) {
+		if(processArray[i].ptrFun != 0) { // jeśli do tej pozycji jest podpięty proces
+			if((uint8_t)(baseTicks - lastStarts[i]) >= processArray[i].period) { // cykl główny doliczył się, trzeba uruchomić proces
+				lastStarts[i] = baseTicks ; // ustawiamy czas ostatniego uruchomienia(teraz)
+				processArray[i].ptrFun() ; // odpalamy proces
+			}
+		}
+	}
 }
 
-void startTimeMeasuring(uint16_t timeToCount) {
+ISR(TIMER1_OVF_vect)
+{
+	// przerwanie przepełnienia timera1
+	mainTicks++ ;
+	if(mainTicks == TICK_BASE_VALUE) { // doliczyliśmy się cyklu głównego (np. 20MS)
+		mainTicks = 0 ;
+		// teraz trzeba wywołać zarządcę czasu, który uruchomi odpowiednie wydarzenia
+		baseTicks++ ; // kolejny cykl główny
+		timeManager() ;
+	}
+}
+
+void startTimer() {
+	mainTicks = 0 ;
+	baseTicks = 0 ;
+
+	uint8_t i = 0 ;
+	for(i = 0 ; i < SZ_CYCLE_PROCESS ; i++)
+		lastStarts[i] = 0 ; // zerujemy czasy pierwszego uruchomienia
+
 	TCNT1 = 0 ;
 	TIMSK1 |= (1 << TOV1) ; // włączenie przerwań cyklu 1milisekundowego
-
-	count = 0 ;
-	timeInterval = timeToCount ;
-
-	state = 1 ;
 }
 
-uint16_t getTimeMeasure() {
-	return count ;
-}
-
-uint8_t getMeasuringState() {
-	return state ;
-}
-
-void stopTimeMeasuring() {
+void stopTimer() {
 	TIMSK1 &= ~(1 << TOV0) ;
-	state = 0 ;
+}
+
+void handleMyProcess(uint8_t period, void (*ptr)(), uint8_t index) {
+	// zapisujemy uchwyt do procesu wraz z czasem, co jaki jest on uruchamiany cyklicznie
+	processArray[index].period = period ;
+	processArray[index].ptrFun = ptr ;
 }
 

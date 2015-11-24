@@ -16,22 +16,17 @@ int main()
 {
 	initProgram() ;
 	initBt() ;
-	char s[10] ;
-	char str[32] ;	// bufor do odczytu z RX
 
-	EncoderResult enc ;
+
 
 	while(1) {
-		turnOnLed() ;
-		enc = readEncoder2() ;
-		sprintf(s, "%u", enc.ticks) ;
-		sendStringBt(s) ;
-		turnOffLed() ;
-		_delay_ms(1000) ;
+		//startTimeMeasuring(100UL) ;
+		//while(getMeasuringState()) ;
+
 	}
 
 return 0;
-
+	char str[32] ;
 	while(1)
 	{
 		if(getState() == READ_MSG)
@@ -40,16 +35,6 @@ return 0;
 
 			getReadMessage((uint8_t *) str) ;	// kopiujemy odczytany string do tablicy
 			checkMessage(str) ;	// sprawdzamy, czy możemy z tym stringiem coś uczynić.
-		}
-		if(isBtn1Pressed()) {
-			stopTimeMeasuring() ;
-			char s[10] ;
-			uint16_t tick = getTimeMeasure() ;
-
-			sprintf(s, "%u", tick) ;
-
-			sendStringBt(s) ;
-			startTimeMeasuring(1000UL) ;
 		}
 	}
 }
