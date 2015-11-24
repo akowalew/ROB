@@ -13,9 +13,9 @@
 
 #define CONST_STRLEN(s)	((sizeof((s)) / sizeof(char)) - 1)
 
-extern const char ID[] ;
-extern const char ID_OK[] ;
-extern const char ID_OK_READ[] ;
+const char ID[] = "ROB" ;
+const char ID_OK[]  = "ROB:OK" ;
+const char ID_OK_READ[]  = "ROB:OK:" ;
 
 #define RX_BUFF_SZ	64
 #define TX_BUFF_SZ	128

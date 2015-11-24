@@ -10,13 +10,13 @@
  int8_t motor0Value = 0 ;
  int8_t motor2Value = 0 ;
 
-void motorsTurnMotors() {
+void turnMotors() {
 
-	motorsTurnMot0(motor0Value) ;
-	motorsTurnMot2(motor2Value) ;
+	turnMotor0(motor0Value) ;
+	turnMotor2(motor2Value) ;
 }
 
-void motorsTurnOn0(uint8_t onOff)
+void turnOn0(bool onOff)
 {
 #ifdef __AVR_ATmega328P__
 	if(onOff)
@@ -28,7 +28,7 @@ void motorsTurnOn0(uint8_t onOff)
 #endif
 }
 
-void motorsTurnOn2(uint8_t onOff)
+void turnOn2(bool onOff)
 {
 #ifdef __AVR_ATmega328P__
 	if(onOff) {
@@ -43,33 +43,33 @@ void motorsTurnOn2(uint8_t onOff)
 #endif
 }
 
-void motorsTurnMot0(int8_t percent)
+void turnMotor0(int8_t percent)
 {
 	if(percent >= 0) {
-		motorsSetMod0A((uint8_t) percent) ;
-		motorsSetMod0B(0) ;
+		setMod0A((uint8_t) percent) ;
+		setMod0B(0) ;
 	} else {
-		motorsSetMod0A(0) ;
-		motorsSetMod0B((uint8_t) -percent) ;
+		setMod0A(0) ;
+		setMod0B((uint8_t) -percent) ;
 	}
 
 	motor0Value = percent ;
 }
 
-void motorsTurnMot2(int8_t percent)
+void turnMotor2(int8_t percent)
 {
 	if(percent >= 0) {
-		motorsSetMod2B((uint8_t) percent) ;
-		motorsSetMod2A(0) ;
+		setMod2B((uint8_t) percent) ;
+		setMod2A(0) ;
 	} else {
-		motorsSetMod2B(0) ;
-		motorsSetMod2A ((uint8_t) -percent) ;
+		setMod2B(0) ;
+		setMod2A ((uint8_t) -percent) ;
 	}
 
 	motor2Value = percent ;
 }
 
-void motorsInit() {
+void initMotors() {
 	// Inicjacja silników w trybie FAST_PWM
 
 	// Clear at OCR, set at Bottom

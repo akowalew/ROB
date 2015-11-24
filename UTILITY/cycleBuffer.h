@@ -10,19 +10,62 @@
 
 typedef unsigned char uint8_t ;
 
-typedef struct {
-	uint8_t SZ ;
-	uint8_t *buff ;
+template<typename Type, uint8_t SZ> class CycleBuffer
+{ // SZ - koniecznie potęga dwójki!
+	Type buff[SZ] ;
 	uint8_t i, j ;
-	uint8_t MASK ;
+	static const uint8_t MASK = SZ-1 ;
+	Type lastAdd ;
 
-	uint8_t lastAdd ;
-	uint8_t full, empty ;
+	bool full, empty ;
 
-} CycleBuffer ;
+	// i - wskaźnik do wstawiania
+	// j - wskaźnik do wyjmowania
 
-uint8_t cycleBufferPush(CycleBuffer *cb, uint8_t data) ;
-uint8_t cycleBufferPop(CycleBuffer *cb, volatile uint8_t *dest) ;
-void cycleBufferInit(CycleBuffer *cb, uint8_t *buffer, uint8_t SZz) ;
+public :
+
+	bool push(Type data) {
+		if(!isFull()) {
+			buff[i] = data ;
+			i = (i+1) & MASK ;
+			empty = false ;
+			if( i == j )
+				full = true ;
+
+			lastAdd = data ;
+			return true ;
+		}
+		return false ;
+	}
+
+	bool pop(Type *dest) {
+		if(!isEmpty()) {
+			*dest = buff[j] ;
+			j = (j+1) & MASK ;
+
+			full = false ;
+			if(i == j)
+				empty = true ;
+			return true ;
+		}
+
+		return false ;
+	}
+
+	bool isFull() const {
+		return full ;
+	}
+	bool isEmpty() const {
+		return empty ;
+	}
+
+	Type seeLastAdded() const {
+		return lastAdd ;
+	}
+
+	CycleBuffer() : i(0), j(0) , full(false), empty(true) { }
+
+};
+
 
 #endif /* USART_BUFORCYKLICZNY_H_ */

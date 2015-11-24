@@ -29,11 +29,13 @@ typedef unsigned char uint8_t ;
 	ROB		Sprawdzamy komunikację z robotem
 */
 
-	typedef enum  {
+namespace BluetoothIO
+{
+	enum BluetoothState {
 		NOTHING_TO_READ ,
 		READ_MSG ,
 		READ_MSG_OVF
-	} BluetoothState ;
+	} ;
 
 	uint8_t getState() ; // odczytanie stanu powoduje wyzerowanie, czyli NOTHING_TO_READ
 	void clearState() ;
@@ -42,6 +44,6 @@ typedef unsigned char uint8_t ;
 	void initBt() ;
 	void getReadMessage(uint8_t *dest) ; // wyrzuć wszystko z bufora RX
 
-
+}
 
 #endif // _BLUETOOTHIO_H_

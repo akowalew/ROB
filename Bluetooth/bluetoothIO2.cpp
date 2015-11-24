@@ -14,16 +14,14 @@
 #include "../UTILITY/utilityFunctions.h"
 #include "../UTILITY/cycleBuffer.h"
 #include "../mainProgramFunctions.h"
-
+#include "../motors.h"
 
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 #include <avr/io.h>
 
-extern CycleBuffer buffRx ;
-extern CycleBuffer buffTx ;
-//TODO inicjacja
-
+CycleBuffer<volatile uint8_t, TX_BUFF_SZ> buffTx ;
+CycleBuffer<volatile uint8_t, RX_BUFF_SZ> buffRx ;
 extern volatile uint8_t bluetoothState ;
 
 void checkRxBuffer() ;
@@ -32,20 +30,20 @@ void sendStringBt(const char *src)
 {
 	while(*src)
 	{
-		if(buffTx.full){
-			udrIntEnable() ;
-			while(!buffTx.empty) ; // czekaj na zwolnienie zasobów
+		if(buffTx.isFull()){
+			Usart::udrIntEnable() ;
+			while(!buffTx.isEmpty()) ; // czekaj na zwolnienie zasobów
 		}
-		cycleBufferPush(&buffTx, *(src++)) ;
+		buffTx.push(*(src++)) ;
 	}
 
-	if(buffTx.full){
-		udrIntEnable() ;
-		while(!buffTx.empty) ; // czekaj na zwolnienie zasobów
+	if(buffTx.isFull()){
+		Usart::udrIntEnable() ;
+		while(!buffTx.isEmpty()) ; // czekaj na zwolnienie zasobów
 	}
-	cycleBufferPush(&buffTx, 0) ;
+	buffTx.push(0) ;
 
-	udrIntEnable() ;
+	Usart::udrIntEnable() ;
 }
 
 void sendStringPBt(const char *srcP)
@@ -53,22 +51,23 @@ void sendStringPBt(const char *srcP)
 	uint8_t c ;
 
 	while(1) {
-		if(buffTx.full){
-			udrIntEnable() ;
-			while(!buffTx.empty) ; // czekaj na zwolnienie zasobów
+		if(buffTx.isFull()){
+			Usart::udrIntEnable() ;
+			while(!buffTx.isEmpty()) ; // czekaj na zwolnienie zasobów
 		}
 	 	 if((c = pgm_read_byte(srcP++)))
-	 		 cycleBufferPush(&buffTx, c) ;
+	 		 buffTx.push(c) ;
 	 	 else
 	 		 break ;
 	}
 
-	if(buffTx.full){
-		udrIntEnable() ;
-		while(!buffTx.empty) ; // czekaj na zwolnienie zasobów
+	if(buffTx.isFull()){
+		Usart::udrIntEnable() ;
+		while(!buffTx.isEmpty()) ; // czekaj na zwolnienie zasobów
 	}
-	cycleBufferPush(&buffTx, 0) ;
-	udrIntEnable() ;
+	buffTx.push(0) ;
+
+	Usart::udrIntEnable() ;
 }
 
 void checkOptionMessage(const char *str)
@@ -85,12 +84,12 @@ void checkOptionMessage(const char *str)
 	}
 	else if(strcmp(str, "SETMOT") == 0) {
 		sendStringBt(ID_OK) ;
-		motorsTurnMotors() ;
+		turnMotors() ;
 	}
 	else if(strcmp(str, "BRKMOT") == 0) {
 		sendStringBt(ID_OK) ;
-		motorsTurnMot0(0) ;
-		motorsTurnMot2(0) ;
+		turnMotor0(0) ;
+		turnMotor2(0) ;
 	}
 }
 
@@ -125,25 +124,25 @@ void checkWriteMessage(const char *str)
 
 ISR(USART_UDRE_vect)
 {
-	if(buffTx.empty)
-		udrIntDisable() ;
+	if(buffTx.isEmpty())
+		Usart::udrIntDisable() ;
 	else
-		cycleBufferPop(&buffTx, &UDR0) ;
+		buffTx.pop(&UDR0) ;
 }
 
 ISR(USART_RX_vect)
 {
 	uint8_t c = UDR0 ;
-	cycleBufferPush(&buffRx, c) ;
+	buffRx.push(c) ;
 	checkRxBuffer() ;
 }
 
 void checkRxBuffer()
 {
-	if(buffRx.full)
-		bluetoothState = READ_MSG_OVF ;
-	if(buffRx.lastAdd == '\n') {
-		bluetoothState = READ_MSG;
+	if(buffRx.isFull())
+		bluetoothState = BluetoothIO::READ_MSG_OVF ;
+	if(buffRx.seeLastAdded() == '\n') {
+		bluetoothState = BluetoothIO::READ_MSG;
 	}
 }
 

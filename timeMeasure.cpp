@@ -9,8 +9,14 @@
 #include "timeMeasure.h"
 #include "mainProgramFunctions.h"
 
+<<<<<<< HEAD:timeMeasure.c
 #include "UTILITY/USART/usart.h"
 #include <stdlib.h>
+=======
+static uint16_t timeInterval = 0 ;
+volatile uint16_t count = 0 ;
+bool state ;
+>>>>>>> parent of 6c2d23d... h:timeMeasure.cpp
 
 volatile uint8_t mainTicks = 0 ;
 volatile uint8_t baseTicks = 0 ;
@@ -61,6 +67,7 @@ ISR(TIMER1_OVF_vect)
 	}
 }
 
+<<<<<<< HEAD:timeMeasure.c
 void startTimer() {
 	mainTicks = 0 ;
 	baseTicks = 0 ;
@@ -68,11 +75,19 @@ void startTimer() {
 	uint8_t i = 0 ;
 	for(i = 0 ; i < SZ_CYCLE_PROCESS ; i++)
 		lastStarts[i] = 0 ; // zerujemy czasy pierwszego uruchomienia
+=======
+	timeInterval = timeToCount ;
+	count = 0 ;
+
+	state = true ;
+}
+>>>>>>> parent of 6c2d23d... h:timeMeasure.cpp
 
 	TCNT1 = 0 ;
 	TIMSK1 |= (1 << TOV1) ; // włączenie przerwań cyklu 1milisekundowego
 }
 
+<<<<<<< HEAD:timeMeasure.c
 void stopTimer() {
 	TIMSK1 &= ~(1 << TOV0) ;
 }
@@ -81,5 +96,14 @@ void handleMyProcess(uint8_t period, void (*ptr)(), uint8_t index) {
 	// zapisujemy uchwyt do procesu wraz z czasem, co jaki jest on uruchamiany cyklicznie
 	processArray[index].period = period ;
 	processArray[index].ptrFun = ptr ;
+=======
+bool getMeasuringState() {
+	return state ;
+}
+
+void stopTimeMeasuring() {
+	TIMSK1 &= ~(1 << TOV0) ;
+	state = false ;
+>>>>>>> parent of 6c2d23d... h:timeMeasure.cpp
 }
 

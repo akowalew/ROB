@@ -17,6 +17,7 @@
 #define TICK_BASE_MILISECONDS		20 // tyle wynosi rozdzielczość bazowego (20ms)
 #define TICK_BASE_VALUE	(TICK_BASE_MILISECONDS / 2) // dzielimy przez 2, bo główny wynosi 2ms
 
+<<<<<<< HEAD
 #define MAX_U16	0xFFFF
 
 #define CALCULATE_TIME(x) ((uint8_t)((x)/TICK_BASE_MILISECONDS))
@@ -47,9 +48,19 @@ typedef struct  {
 	// gdy ptrFun == 0 to procedura nie jest sprawdzana nawet
 
 } CycleProcessStruct ;
+=======
+void initTimeMeasure(uint16_t elementaryTick) ;
+void startTimeMeasuring(uint16_t timeToCount) ;
+>>>>>>> parent of 6c2d23d... h
 
 void handleMyProcess(uint8_t period, void (*ptr)(void), uint8_t index) ;
 
+<<<<<<< HEAD
 #define SZ_CYCLE_PROCESS 3
+=======
+bool getMeasuringState() ;
+// TRUE - nadal mierzy
+// FALSE - przestał mierzyć(sam, albo ktoś go wyłączył)
+>>>>>>> parent of 6c2d23d... h
 
 #endif /* TIMEMEASURE_H_ */

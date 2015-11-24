@@ -16,7 +16,6 @@ volatile uint8_t * const ptrVariables[] =
 	(uint8_t *)&motor0Value,
 	(uint8_t *)&motor2Value
 };
-
 const uint8_t NUMBER_OF_VARIABLES = sizeof(ptrVariables) / sizeof(volatile uint8_t * const) ;
 
 inline void setupLed() {
@@ -31,12 +30,18 @@ void initButtons() {
 	PORTB |= (1 << BTN2) ;	// włączenie rezystorów podciągajacych
 }
 
-uint8_t isBtn1Pressed() {
-	return !(PIND & (1 << BTN1)) ;
+bool isBtn1Pressed() {
+	if(PIND & (1 << BTN1))
+		return false ;
+	else
+		return true ;
 }
 
-uint8_t isBtn2Pressed() {
-	return !(PINB & (1 << BTN2)) ;
+bool isBtn2Pressed() {
+	if(PINB & (1 << BTN2))
+		return false ;
+	else
+		return true ;
 }
 
 
@@ -46,9 +51,9 @@ void initProgram(void) {
 	setupLed() ;
 
 	// inicjacja pracy silników
-	motorsInit() ;
-	motorsTurnOn0(1) ;
-	motorsTurnOn2(1) ;
+	initMotors() ;
+	turnOn0(true) ;
+	turnOn2(true) ;
 
 	// inicjacja enkoderów
 	initEncoders() ;

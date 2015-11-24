@@ -18,8 +18,8 @@ void turnOffLed() ;
 void turnSwitchLed() ;
 
 void initButtons() ;
-uint8_t isBtn1Pressed() ;
-uint8_t isBtn2Pressed()  ;
+bool isBtn1Pressed() ;
+bool isBtn2Pressed()  ;
 
 void initProgram(void) ;
 
